@@ -1,0 +1,44 @@
+<!doctype html>
+<!--[if gte IE 9]><!-->
+<html class="no-js " lang="en" ng-controller="atRoot" [REQUIRE-JS-MIN]>
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{pageTitle}}</title>
+    <link href='http://fonts.googleapis.com/css?family=Fenix' rel='stylesheet' type='text/css'>
+    <script>
+        (function () {
+            function addToHead(element, attrs, append) {
+                var head = document.getElementsByTagName("head")[0],
+                        el = document.createElement(element),
+                        name;
+                for (name in attrs) {
+                    el.setAttribute(name, attrs[name]);
+                }
+                if (!append) {
+                    head.insertBefore(el, head.firstChild);
+                } else {
+                    head.appendChild(el);
+                }
+            }
+
+            addToHead("base", {"href": location.protocol + "//" + location.host + '/'});
+            addToHead("link", {
+                "rel": "stylesheet",
+                "type": "text/css",
+                "href": "styles/all.css"
+            }, true);
+        }());
+    </script>
+</head>
+<body>
+<!--[if lt IE 9]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p><![endif]-->
+
+<div ng-view></div>
+<script data-main="[REPLACE_DATA_MAIN]" src="[REPLACE_BASE_PATH]core/requirejs/require.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+    "baseUrl": "/",
+    "paths": {
+        "angular": "core/angular/angular",
+        "angular-route": "core/angular-route/angular-route",
+        "jquery": "core/jquery/jquery"
+    },
+    "shim": {
+        "angular": {
+            "deps": ["jquery"],
+            "exports": "angular"
+        },
+        "angular-route": {
+            "deps": [
+                "angular"
+            ]
+        }
+    },
+    "urlArgs": "",
+    "waitSeconds": 5
+}

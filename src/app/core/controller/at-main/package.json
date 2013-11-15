@@ -1,6 +1,5 @@
 {
     "name" : "atMain",
-    "folder" : "at-main",
     "type" : "controller",
     "since" : "0.1.0",
     "version" : "0.1.0",

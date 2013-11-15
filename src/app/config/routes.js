@@ -8,11 +8,13 @@ define(function(){
                resolve: {
                     resource: function($q, $rootScope){
                         var d = $q.defer();
-                        requirejs(['app/core/controller/at-main/controller'], function(){
-                            setTimeout(function(){
-                                d.resolve('Resolved');
-                                $rootScope.$apply();
-                            }, 10);
+                        angularTrainer.requirejs({
+                            controllers: [
+                                "atMain"
+                            ]
+                        }, function(){
+                            d.resolve('Resolved');
+                            $rootScope.$apply();
                         });
 
                         return d.promise;

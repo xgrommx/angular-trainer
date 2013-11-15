@@ -24,7 +24,8 @@ var config = {
     "paths": {
         "angular": "core/angular/angular",
         "angular-route": "core/angular-route/angular-route",
-        "jquery": "core/jquery/jquery"
+        "jquery": "core/jquery/jquery",
+        "angular-mocks": "core/angular-mocks/angular-mocks"
     },
     "shim": {
         "angular": {
@@ -32,6 +33,11 @@ var config = {
             "exports": "angular"
         },
         "angular-route": {
+            "deps": [
+                "angular"
+            ]
+        },
+        "angular-mocks": {
             "deps": [
                 "angular"
             ]

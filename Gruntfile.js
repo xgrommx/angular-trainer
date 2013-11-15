@@ -240,12 +240,14 @@ module.exports = function (grunt) {
 
 		atRequire: {
 			dev: {
+                defineName: 'require-config',
 				clearBaseUrl: false,
 				from: 'src/config.json',
                 version: config.version,
 				to: config.dev + '/require-config.js'
 			},
 			release: {
+                defineName: 'require-config',
 				clearBaseUrl: false,
 				from: 'src/config.json',
                 version: config.version,
@@ -254,20 +256,37 @@ module.exports = function (grunt) {
 		},
 		atConfig: {
 			dev: {
-                base: 'src/',
+                defineName: 'require-packages',
+                cwd: 'src/',
 				path: [
-					'src/app/'
+					'app/'
 				],
 				to: config.dev + '/require-packages.js'
 			},
 			release: {
-                base: 'src/',
+                defineName: 'require-packages',
+                cwd: 'src/',
 				path: [
 					'src/app/'
 				],
 				to: config.release + '/require-packages.js'
 			}
-		}
+		},
+        karma: {
+            dev: {
+                configFile: 'karma.conf.js',
+                singleRun: true
+            }
+        },
+        protractor: {
+            all: {
+                configFile: "protractor.conf.js", // Target-specific config file,
+                keepAlive: false,
+                options: {
+                    args: {} // Target-specific arguments
+                }
+            }
+        }
 	});
 
 
@@ -283,7 +302,18 @@ module.exports = function (grunt) {
 		]);
 	});
 
+    grunt.registerTask('test', [
+        'test:unit',
+        'test:e2e'
+    ]);
 
+    grunt.registerTask('test:e2e', [
+        'protractor:all'
+    ]);
+
+    grunt.registerTask('test:unit', [
+        'karma:dev'
+    ]);
 
 	grunt.registerTask('default', [
 		'server'

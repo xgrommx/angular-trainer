@@ -12,19 +12,7 @@
          * @type {NgAmd}
          */
         var bootstrapHelper = new NgAmd();
-        /**
-         * Folder structore for types
-         */
-        bootstrapHelper.setFolderStructure({
-            'factory': 'app/core/factory',
-            'service': 'app/core/service',
-            'value': 'app/core/value',
-            'animation': 'app/core/animation',
-            'filter': 'app/core/filter',
-            'controller': 'app/core/controller',
-            'directive': 'app/core/directive',
-            'module': 'app/core/modules'
-        });
+
         /**
          * Set packages
          */

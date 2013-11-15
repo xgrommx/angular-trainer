@@ -1,7 +1,7 @@
 /**
  * Created by igi on 10.11.13.
  */
-define(function () {
+define('ng-amd', function () {
 
     /**
      * Patch for angular amd loading
@@ -21,19 +21,33 @@ define(function () {
          * @private
          */
         this._module = null;
+
         /**
-         * Folder structire
+         * Definitions
+         * @type {Array}
+         * @private
+         */
+        this._definitions = [];
+        /**
+         * Base url
+         * @type {null}
+         * @private
+         */
+        this._base = '';
+        /**
+         * External dependencys loaded and pushed to _libs so that can be accessable to censhare api
          * @type {{}}
          * @private
          */
-        this._folderStructure = {};
+        this._libs = {};
     };
+
     /**
-     * Folder structure
-     * @param ob
+     * Baseurl
+     * @param base
      */
-    NgAmd.prototype.setFolderStructure = function (ob) {
-        this._folderStructure = ob;
+    NgAmd.prototype.setBaseUrl = function (base) {
+        this._base = base;
     }
     /**
      * Set application packages
@@ -43,16 +57,49 @@ define(function () {
         this._packages = definition;
     };
     /**
+     * Return type
+     * @param type
+     * @returns {*}
+     */
+    NgAmd.prototype.getType = function (type) {
+        switch (type) {
+            case 'providers':
+                return 'provider';
+                break;
+            case 'controllers':
+                return 'controller';
+                break;
+            case 'directives':
+                return 'directive';
+                break;
+            case 'values':
+                return 'value';
+                break;
+            case 'services':
+                return 'service';
+                break;
+            case 'factories':
+                return 'factory';
+                break;
+            case 'filters':
+                return 'filter';
+                break;
+
+        }
+        return type;
+    }
+    /**
      * Get package
      * @param name
      * @param type
      * @returns {*}
      */
     NgAmd.prototype.getPackage = function (name, type) {
+        type = this.getType(type);
         var i, len = this._packages.length, c;
         for (i = 0; i < len; ++i) {
             c = this._packages[i];
-            if ((c.name === name && c.type === type) || (c.folder === name && c.type === type)) {
+            if ((c.name === name && c.type === type)) {
                 return c;
             }
         }
@@ -138,7 +185,8 @@ define(function () {
     /**
      * Define a module
      */
-    NgAmd.prototype.define = function () {
+    NgAmd.prototype.defineModule = function () {
+
         var args = Array.prototype.slice.call(arguments, 0), name, deps, callback, data = [];
 
         if (args.length === 3) {
@@ -164,17 +212,48 @@ define(function () {
             this.merge(data, this.require(deps));
         }
         if (args.length === 3) {
+            this._definitions.push({
+                name: name,
+                data: data,
+                callback: callback
+            });
             define(name, data, callback);
         } else if (args.length === 2) {
             if (name && callback) {
+                this._definitions.push({
+                    name: name,
+                    callback: callback
+                });
                 define(name, callback);
             } else {
+                this._definitions.push({
+                    data: data,
+                    callback: callback
+                });
                 define(data, callback);
             }
         } else {
+            this._definitions.push({
+                callback: callback
+            });
             define(callback);
         }
     };
+
+    /**
+     * Check package
+     */
+    NgAmd.prototype.checkPackage = function (name) {
+        var i, len = this._packages.length, c;
+        for (i = 0; i < len; ++i) {
+            c = this._definitions[i];
+
+            if (c && c.name && (c.name === name)) {
+                return true;
+            }
+        }
+        return false;
+    }
     /**
      * Require dependecy
      * @param type
@@ -183,18 +262,21 @@ define(function () {
     NgAmd.prototype.require = function (ob) {
         var data = [], self = this, p;
 
+        if (ob && ob.require) {
+            this.merge(data, ob.require);
+        }
+
         for (var type in ob) {
-            if (type === "require") {
-                this.merge(data, ob[type]);
-            } else {
+            if (type !== "require") {
+                var typ = self.getType(type);
                 if (Array.isArray(ob[type])) {
                     ob[type].forEach(function (value) {
-                        p = self.getPackage(value, type);
-                        data.push(self._folderStructure[type] + '/' + p.folder + '/' + type);
+                        p = self.getPackage(value, typ);
+                        data.push(p.folder + typ);
                     });
                 } else {
-                    p = self.getPackage(ob[type], type);
-                    data.push(self._folderStructure[type] + '/' + p.folder + '/' + type);
+                    p = self.getPackage(ob[type], typ);
+                    data.push(p.folder + typ);
                 }
 
             }
@@ -230,6 +312,7 @@ define(function () {
         }
     };
 
+
     /**
      * Published api to window
      * @returns {{register: {factory: Function, service: Function, value: Function, animation: Function, filter: Function, controller: Function, directive: Function}}}
@@ -247,7 +330,7 @@ define(function () {
             keys = [
                 'factory', 'service', 'value',
                 'animation', 'filter', 'controller',
-                'directive'
+                'directive', 'provider'
             ],
             def = {};
 
@@ -264,35 +347,110 @@ define(function () {
              * Register object
              */
             register: (function () {
+
+
                 var pub = {};
                 self.extend(pub, def);
+
+
                 keys.forEach(function (key) {
                     pub[key] = function () {
                         var args = Array.prototype.slice.call(arguments, 0),
                             defineArgs = [],
                             p = self.getPackage(args[0], key),
-                            name = args[0];
+                            name,
+                            typ = self.getType(key);
                         if (useMinify) {
-                            name = args[0] + key;
+                            name = p.folder + typ;
                             defineArgs.push(name);
                         }
-                        if (haveDep(p.require)) {
-                            defineArgs.push(p.require);
+                        if (haveDep(p.dependency)) {
+                            defineArgs.push(p.dependency);
                         }
+
                         defineArgs.push(function () {
+                            if (p.dependency && p.dependency.require) {
+                                if (Array.isArray(p.dependency.require)) {
+
+                                    var depArgs = Array.prototype.slice.call(arguments, 0);
+                                    p.dependency.require.forEach(function (value, index) {
+                                        self._libs[value] = depArgs[index];
+                                    });
+                                }
+                            }
                             self._module[key].apply(self._module[key], args);
+                            return null;
                         });
-                        self.define(defineArgs[0], defineArgs[1], defineArgs[2]);
+                        self.defineModule.apply(self, defineArgs);
                     };
                 });
+
+
                 return pub;
             }()),
             /**
-             * Publish define
+             * Require function
+             */
+            require: (function () {
+                var ob = {};
+                keys.forEach(function (value) {
+                    ob[value] = function (v) {
+                        var o = {}, r;
+                        o[value] = v;
+                        r = self.require(o);
+                        if (Array.isArray(v)) {
+                            return r;
+                        }
+                        return r.pop();
+                    }
+                });
+                return ob;
+            }()),
+            /**
+             *
+             * @param data
+             * @param callback
+             */
+            requirejs: function (deps, callback) {
+                var data = [], items = self.require(deps);
+                if (typeof items === "string") {
+                    data.push(items);
+                } else {
+                    self.merge(data, items);
+                }
+                requirejs(data, function () {
+                    if (deps && deps.require) {
+                        if (Array.isArray(deps.require)) {
+                            var depArgs = Array.prototype.slice.call(arguments, 0);
+                            deps.require.forEach(function (value, index) {
+                                self._libs[value] = depArgs[index];
+                            });
+                        }
+                    }
+                    callback.apply(requirejs, depArgs);
+                });
+            },
+            /**
+             * Reference to self define
              */
             define: function () {
-                var args = Array.prototype.slice.call(arguments, 0);
-                self.define.apply(self, args);
+                var depArgs = Array.prototype.slice.call(arguments, 0);
+                self.defineModule.apply(self, depArgs);
+            },
+            /**
+             * Get an library from package
+             * @param name
+             * @returns {*}
+             */
+            get: function (name) {
+                return  self._libs[name] !== undefined ? self._libs[name] : null;
+            },
+            /**
+             * Templates
+             */
+            template: function (name, type) {
+                var p = self.getPackage(name, type);
+                return  self._base + p.folder + 'template.html';
             }
         };
     }

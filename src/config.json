@@ -3,7 +3,8 @@
     "paths": {
         "angular": "core/angular/angular",
         "angular-route": "core/angular-route/angular-route",
-        "jquery": "core/jquery/jquery"
+        "jquery": "core/jquery/jquery",
+        "bootstrap": "core/bootstrap/js"
     },
     "shim": {
         "angular": {
@@ -13,6 +14,11 @@
         "angular-route": {
             "deps": [
                 "angular"
+            ]
+        },
+        "bootstrap/dropdown": {
+            "deps": [
+                "jquery"
             ]
         }
     },

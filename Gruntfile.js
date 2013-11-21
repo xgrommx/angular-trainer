@@ -270,7 +270,15 @@ module.exports = function (grunt) {
 					'src/app/'
 				],
 				to: config.release + '/require-packages.js'
-			}
+			},
+            test: {
+                cwd: 'src/',
+                path: [
+                    'app/shared/'
+                ],
+                defineName: 'karma.test.package',
+                to: 'src/karma.test.package.js' // for testing purp
+            }
 		},
         karma: {
             all: {
@@ -303,6 +311,7 @@ module.exports = function (grunt) {
 	});
 
     grunt.registerTask('test', [
+
         'test:unit',
         'test:e2e'
     ]);
@@ -312,6 +321,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('test:unit', [
+        'atConfig:test',
         'karma:all'
     ]);
 

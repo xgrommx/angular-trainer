@@ -374,7 +374,13 @@ define('ng-amd', function () {
 
                                     var depArgs = Array.prototype.slice.call(arguments, 0);
                                     p.dependency.require.forEach(function (value, index) {
-                                        self._libs[value] = depArgs[index];
+                                        if (depArgs[index]) {
+                                            self._libs[value] = depArgs[index];
+                                        } else {
+                                            if (value in window) {
+                                                self._libs[value] = window[value];
+                                            }
+                                        }
                                     });
                                 }
                             }
@@ -423,12 +429,31 @@ define('ng-amd', function () {
                         if (Array.isArray(deps.require)) {
                             var depArgs = Array.prototype.slice.call(arguments, 0);
                             deps.require.forEach(function (value, index) {
-                                self._libs[value] = depArgs[index];
+                                if (depArgs[index]) {
+                                    self._libs[value] = depArgs[index];
+                                } else {
+                                    if (value in window) {
+                                        self._libs[value] = window[value];
+                                    }
+                                }
                             });
                         }
                     }
                     callback.apply(requirejs, depArgs);
                 });
+            },
+            /**
+             * Return path path
+             */
+            getPath: function (name, type) {
+                var p = self.getPackage(name, type);
+                return self._base + p.folder;
+            },
+            /**
+             * Return packages
+             */
+            getPackages: function () {
+                return self._packages;
             },
             /**
              * Reference to self define

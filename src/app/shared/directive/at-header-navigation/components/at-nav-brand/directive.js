@@ -10,8 +10,8 @@ angularTrainer.register.directive(
                 templateUrl: angularTrainer.template('atNavBrand', 'directive'),
                 link: function (scope) {
                     scope.brand = {
-                        img: 'http://angularjs.org/img/AngularJS-small.png',
-                        href: 'http://angularjs.org/',
+                        img: 'assets/AngularJS-small.png',
+                        href: '/',
                         collapse: '#nav-left-collapse'
                     };
                 }

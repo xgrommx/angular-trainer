@@ -4,7 +4,8 @@
         "angular": "core/angular/angular",
         "angular-route": "core/angular-route/angular-route",
         "jquery": "core/jquery/jquery",
-        "bootstrap": "core/bootstrap/js"
+        "bootstrap": "core/bootstrap/js",
+        "ace": "core/ace/build/src-min-noconflict/ace"
     },
     "shim": {
         "angular": {

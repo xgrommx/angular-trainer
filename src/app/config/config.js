@@ -13,6 +13,7 @@ angularTrainer.define({
     angularTrainer.register.config([
         '$locationProvider', '$routeProvider',
         function ($location, $route) {
+
             routes.forEach(function (value) {
                 $route.when(value.route, value.options);
             });

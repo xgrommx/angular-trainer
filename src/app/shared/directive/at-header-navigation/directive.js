@@ -7,10 +7,7 @@ angularTrainer.register.directive(
         function () {
             return {
                 restrict: 'E',
-                templateUrl: angularTrainer.template('atHeaderNav', 'directive'),
-                link: function () {
-
-                }
+                templateUrl: angularTrainer.template('atHeaderNav', 'directive')
             }
         }
     ]

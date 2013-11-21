@@ -1,0 +1,12 @@
+{
+    "name": "bootStrapAnAplication",
+    "type": "controller",
+    "since": "0.1.0",
+    "version": "0.1.0",
+    "menu": {
+        "name": "side_menu",
+        "sequence": 1,
+        "title": "1. Bootstrap an application",
+        "href": "/tutorials/bootstrap-an-application"
+    }
+}

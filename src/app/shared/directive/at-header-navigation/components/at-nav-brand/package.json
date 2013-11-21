@@ -8,7 +8,7 @@
             "atTranslate"
         ],
         "require": [
-            "bootstrap/dropdown"
+            "bootstrap/collapse"
         ]
     }
 }

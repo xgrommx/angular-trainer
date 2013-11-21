@@ -43,9 +43,7 @@ exports.config = {
   //
   // Spec patterns are relative to the location of this config.
   specs: [
-    'test/e2eLogin.js',
-    'src/**/e2eSpec.js',
-    'test/e2eLogout.js'
+    'src/**/e2eSpec.js'
   ],
 
   // ----- Capabilities to be passed to the webdriver instance ----

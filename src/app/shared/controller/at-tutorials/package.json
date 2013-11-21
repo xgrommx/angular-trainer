@@ -1,0 +1,32 @@
+{
+    "name": "atTutorials",
+    "type": "controller",
+    "since": "0.1.0",
+    "version": "0.1.0",
+    "dependency": {
+        "directives": [
+            "atNavMenu",
+            "atEditor",
+            "atControllerLoader"
+        ]
+    },
+    "menu": {
+        "name": "leftHeadMenu",
+        "title": "Tutorials",
+        "href": "/tutorials"
+    },
+    "routes": [
+        {
+            "route": "/tutorials/:name",
+            "options": {
+                "controller": "atTutorials"
+            }
+        },
+        {
+            "route": "/tutorials",
+            "options": {
+                "controller": "atTutorials"
+            }
+        }
+    ]
+}

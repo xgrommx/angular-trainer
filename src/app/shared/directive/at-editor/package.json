@@ -1,0 +1,11 @@
+{
+    "name": "atEditor",
+    "type": "directive",
+    "since": "0.1.0",
+    "version": "0.1.0",
+    "dependency": {
+        "require": [
+            "ace"
+        ]
+    }
+}

@@ -1,0 +1,39 @@
+<div class="row">
+    <div class="col-md-2">
+        <div class="well">
+            <at-nav-menu menu="side_menu" data-css-class="nav bs-sidenav"></at-nav-menu>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="row">
+            <div ng-if="!controllerName">
+               <h2>{{pageTitle | atTranslate}}</h2>
+                <p>
+                    In this tutorial you will learn how to use an ng-amd api
+                    in order to create an large scale application.
+                    Api covers all feature and concept what you need.
+                </p>
+                <p>
+                    <h3>Key features:</h3>
+                    <ul>
+                        <li>1. Module pattern</li>
+                        <li>2. Lazy loading</li>
+                        <li>3. Dynamic build of application</li>
+                    </ul>
+                    <h3>You will learn how to:</h3>
+                    <ul>
+                        <li>1. Create directive</li>
+                        <li>2. Create controller</li>
+                        <li>3. Create service</li>
+                        <li>4. Create filter</li>
+                        <li>5. Create provider</li>
+                        <li>6. Create factory</li>
+                        <li>7. Test application</li>
+                    </ul>
+                </p>
+            </div>
+            <div ng-if="!!controllerName" at-controller-loader="controllerName"></div>
+        </div>
+    </div>
+</div>
+

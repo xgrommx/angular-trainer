@@ -1,0 +1,70 @@
+<div class="row">
+    <div class="col-md-10">
+        <h1>Bootstrap an application</h1>
+
+        <p>
+            As you can see in order to bootstrap application we are using an requirejs to fetch require-config, require-packages and ng-amd api. <br >
+            require-config.js is an config builded by server and contains an require config data.  <a href="http://requirejs.org/docs/api.html#config" target="_blank"> More about requirejs config</a> <br />
+            require-packages.js is an package build from server which contains all packages data from each package.json file. This is required for ng-amd api.<br />
+            ng-amd is api which combine  angularjs and mocks requirejs.
+
+        </p>
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-10">
+        <h5>bootstrap.js</h5>
+        <pre at-editor id="editor" style="min-height: 600px;">
+/**
+ * Created by igi on 10.11.13.
+ */
+(function (window, document) {
+    requirejs(['require-config', 'require-packages', 'ng-amd'], function (config, packages, NgAmd) {
+        /**
+         * Setup config
+         */
+        require.config(config);
+        /**
+         * BootStrapHelper
+         * @type {NgAmd}
+         */
+        var bootstrapHelper = new NgAmd();
+
+        /**
+         * Set packages
+         */
+        bootstrapHelper.setPackages(packages);
+        /**
+         * Publish api to window
+         * @type {*}
+         */
+        window.angularTrainer = bootstrapHelper.publishPublicApi(
+            (function () {
+                var html = document.getElementsByTagName('html')[0];
+                return html.getAttribute('data-require-js-min') === "true";
+            }())
+        );
+        /**
+         * Load angular and setup module
+         */
+        requirejs(['angular', 'angular-route'], function (angular) {
+            /**
+             * Set module
+             */
+            bootstrapHelper.setModule(angular.module('angularTrainer', ['ngRoute', 'ngAMD']));
+            /**
+             * Bootstrap application
+             */
+            requirejs(['app/config/config', 'app/config/run'], function () {
+                angular.bootstrap(document, ['angularTrainer']);
+            });
+        });
+
+    });
+}(window, document, undefined));
+        </pre>
+    </div>
+
+</div>
+

@@ -25,7 +25,8 @@ var config = {
         "angular": "core/angular/angular",
         "angular-route": "core/angular-route/angular-route",
         "jquery": "core/jquery/jquery",
-        "angular-mocks": "core/angular-mocks/angular-mocks"
+        "angular-mocks": "core/angular-mocks/angular-mocks",
+        "ace": "core/ace/build/src-min-noconflict/ace"
     },
     "shim": {
         "angular": {

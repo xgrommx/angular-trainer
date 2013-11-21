@@ -1,0 +1,89 @@
+<div class="row">
+    <div class="col-md-10">
+        <h1>Creating an controller</h1>
+
+        <p>
+            Controller have folder structure like this:
+        <ul>
+            <li>
+                controllers ->
+                <ul>
+                    <li>creating-an-controller ->
+                        <ul>
+                            <li>
+                                controllers ->
+                                <ul>
+                                    <li> -> controller.js</li>
+                                    <li> -> package.json</li>
+                                    <li> -> template.html</li>
+                                </ul>
+                            </li>
+                            <li>
+                                test ->
+                                <ul>
+                                    <li>-> unitSpec.js</li>
+                                    <li>-> e2eSpec.js</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        </p>
+        <p>
+            angularTrainer object is reference to ng-amd public methods which is published in bootstrap.js
+            <pre>
+         /**
+         * Publish api to window
+         * @type {*}
+         */
+        window.angularTrainer = bootstrapHelper.publishPublicApi(
+            (function () {
+                var html = document.getElementsByTagName('html')[0];
+                return html.getAttribute('data-require-js-min') === "true";
+            }())
+        );
+            </pre>
+        </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-5">
+        <h5>controller.js</h5>
+        <pre at-editor id="editor" style="min-height: 300px;">
+angularTrainer.register.controller(
+    'creatingAnController',
+    ['$scope',
+        function () {
+
+        }
+    ]
+)
+        </pre>
+    </div>
+    <div class="col-md-5">
+        <h5>package.json</h5>
+
+        <p>
+            Package json requires a "name" and "type" object. <br />
+            Name must be same as component name in this case -> <b>creatingAnController</b> <br />
+            Type must be same as component type in this case -> <b>controller</b> <br />
+            Menu object is an custom object which im using in at-menu service to create dynamic menu.
+        </p>
+        <pre at-editor id="package" style="min-height: 300px;">
+{
+    "name": "creatingAnController",
+    "type": "controller",
+    "since": "0.1.0",
+    "version": "0.1.0",
+    "menu": {
+        "name": "side_menu",
+        "title": "1. Creating an controller",
+        "href": "/tutorials/creating-an-controller"
+    }
+}
+        </pre>
+    </div>
+</div>
+

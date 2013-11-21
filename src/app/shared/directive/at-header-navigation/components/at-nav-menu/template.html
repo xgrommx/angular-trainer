@@ -1,0 +1,13 @@
+
+<ul ng-class="[cssClass]">
+    <li ng-repeat="item in menu" ng-init="item.init(item)" ng-class="[item.cssClass, item.type]" ng-switch="item.type" >
+        <a href="{{item.href}}" title="{{item.title}}" ng-switch-default>{{item.title}}</a>
+        <!--- SUBMENU --->
+        <a href="{{item.href}}" title="{{item.title}}" ng-switch-when="submenu">{{item.title}}</a>
+        <at-nav-menu-recursive ng-switch-when="submenu"  menu="item.menu"  type="submenu"></at-nav-menu-recursive>
+        <!--- DROPDOWN --->
+        <a href="#" class="dropdown-toggle" ng-switch-when="dropdown" ng-click="item.click($event, item)" data-toggle="dropdown" >{{item.title}} <b class="caret"></b></a>
+        <at-nav-menu-recursive ng-switch-when="dropdown"  menu="item.menu" type="dropdown"></at-nav-menu-recursive>
+    </li>
+</ul>
+

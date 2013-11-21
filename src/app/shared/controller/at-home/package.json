@@ -1,0 +1,26 @@
+{
+    "name": "atHome",
+    "type": "controller",
+    "since": "0.1.0",
+    "version": "0.1.0",
+    "dependency": {
+        "directives": [
+            "atNavMenu",
+            "atEditor",
+            "atControllerLoader"
+        ]
+    },
+    "menu": {
+        "name": "leftHeadMenu",
+        "title": "Home",
+        "href": "/"
+    },
+    "routes": [
+        {
+            "route": "/",
+            "options": {
+                "controller": "atHome"
+            }
+        }
+    ]
+}

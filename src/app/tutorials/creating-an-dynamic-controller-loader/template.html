@@ -1,0 +1,165 @@
+<div class="row">
+    <div class="col-md-10">
+        <h1>Creating an dynamic controller loader</h1>
+
+        <p>
+            Directive structure:
+        <ul>
+            <li>
+                shared ->
+                <ul>
+                    <li>directives ->
+                        <ul>
+                            <li>
+                                at-controller-loader ->
+                                <ul>
+                                    <li> -> directive.js</li>
+                                    <li> -> package.json</li>
+                                    <li>
+                                        test ->
+                                        <ul>
+                                            <li>-> unitSpec.js</li>
+                                            <li>-> e2eSpec.js</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        </p>
+    </div>
+</div>
+<div class="row">
+
+    <div class="col-md-5">
+
+        <h4>Usage</h4>
+
+        <p>
+            ControllerName is an expression from scope
+        </p>
+    <pre>
+&ltdiv at-controller-loader="controllerName"&gt&lt/div&gt
+    </pre>
+    </div>
+    <div class="col-md-5">
+        <h5>package.json</h5>
+
+        <p>
+            Package json requires a "name" and "type" object. <br/>
+            Name must be same as component name in this case -> <b>atControllerLoader</b> <br/>
+            Type must be same as component type in this case -> <b>directive</b> <br/>
+        </p>
+        <pre at-editor id="package" style="min-height: 100px;">
+{
+    "name": "atControllerLoader",
+    "type": "directive"
+}
+        </pre>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-10">
+        <h5>directive.js</h5>
+        <pre at-editor id="editor" style="min-height: 1500px;">
+/**
+ * Created by igi on 21.11.13.
+ */
+angularTrainer.register.directive(
+    'atControllerLoader',
+    [   '$compile', '$parse', '$http', '$templateCache', '$animate', '$anchorScroll', '$controller',
+        function ($compile, $parse, $http, $templateCache, $animate, $anchorScroll, $controller) {
+            return {
+                restrict: 'EA',
+                transclude: 'element',
+                controller: function ($scope) {
+                    /**
+                     * Get layout
+                     * @param name
+                     * @returns {string}
+                     */
+                    this.getLayout = function (name) {
+                        return angularTrainer.getPath(name, 'controller') + 'template.html';
+                    };
+
+                    /**
+                     * Load layout
+                     * @param url
+                     */
+                    this.loadLayout = function (url) {
+                        return $http.get(this.getLayout(url), {cache: $templateCache});
+                    }
+                },
+                compile: function (element, attr) {
+
+
+                    return function (scope, $element, $attr, controller, $transclude) {
+
+                        var currentScope,
+                            onloadExp = attr.onload || '',
+                            autoScrollExp = attr.autoscroll,
+                            currentElement,
+                            cleanupLastIncludeContent = function () {
+                                if (currentScope) {
+                                    currentScope.$destroy();
+                                    currentScope = null;
+                                }
+                                if (currentElement) {
+                                    $animate.leave(currentElement);
+                                    currentElement = null;
+                                }
+                            },
+                            loadController = $parse($attr.atControllerLoader || $attr.atController)(scope);
+
+
+                        if (loadController) {
+                            angularTrainer.requirejs({
+                                controller: loadController
+                            }, function () {
+                                controller.loadLayout(loadController).success(function (template) {
+                                    if (template) {
+                                        var newScope = scope.$new();
+                                        $transclude(newScope, function (clone) {
+                                            clone.html(template);
+                                            $animate.enter(clone, null, currentElement || $element, function onNgViewEnter() {
+                                                if (angular.isDefined(autoScrollExp) && (!autoScrollExp || scope.$eval(autoScrollExp))) {
+                                                    $anchorScroll();
+                                                }
+                                            });
+                                            cleanupLastIncludeContent();
+                                            var link = $compile(clone.contents());
+                                            currentScope = newScope;
+                                            currentElement = clone;
+                                            var controller = $controller(loadController, {$scope: newScope});
+                                            clone.data('$ngControllerController', controller);
+                                            clone.children().data('$ngControllerController', controller);
+                                            link(currentScope);
+                                            currentScope.$emit('$atControllerContentLoaded');
+                                            currentScope.$eval(onloadExp);
+                                        });
+                                    } else {
+                                        cleanupLastIncludeContent();
+                                    }
+                                })
+                                .error(function () {
+                                    cleanupLastIncludeContent();
+                                });
+                                scope.$emit('$atControllerContentRequested');
+                            });
+                        }
+                    };
+                }
+            }
+        }
+    ]
+);
+        </pre>
+    </div>
+</div>
+
+
+

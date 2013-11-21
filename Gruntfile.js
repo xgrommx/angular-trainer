@@ -26,6 +26,7 @@ module.exports = function (grunt) {
 	var config = {
 		dev: 'dev',
 		release: 'release',
+        baseUrl: '/',
         version: 'v=' + bowerJSON.version
 	};
 
@@ -113,14 +114,31 @@ module.exports = function (grunt) {
 						expand: true,
 						cwd: 'src/',
 						src: [
-							'bootstrap/**',
-							'core/**',
-							'extra/**',
-							'lib/**/*.html',
-							'widgets/**'
+							'app/**'
 						],
-						dest: config.release + '/app/'
+						dest: config.release + '/'
 					},
+                    {
+                        expand: true,
+                        cwd: 'src/',
+                        src: [
+                            'core/ace/build/src-min-noconflict/*.js',
+                            'core/**/angular.js',
+                            'core/**/angular-route.js',
+                            'core/jquery/jquery.js',
+                            'core/bootstrap/js/*.js',
+                            'core/**/require.js'
+                        ],
+                        dest: config.release + '/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'src/',
+                        src: [
+                            'assets/**'
+                        ],
+                        dest: config.release + '/'
+                    },
 					{
 						expand: true,
 						cwd: 'src/resources/',
@@ -145,6 +163,10 @@ module.exports = function (grunt) {
 						],
 						dest: config.release + '/'
 					},
+                    {
+                        src: 'src/ng-amd.js',
+                        dest: config.release + '/ng-amd.js'
+                    },
 					{
 						src: 'src/bootstrap.js',
 						dest: config.release + '/bootstrap.js'
@@ -267,7 +289,7 @@ module.exports = function (grunt) {
                 defineName: 'require-packages',
                 cwd: 'src/',
 				path: [
-					'src/app/'
+					'app/'
 				],
 				to: config.release + '/require-packages.js'
 			},
@@ -310,8 +332,18 @@ module.exports = function (grunt) {
 		]);
 	});
 
-    grunt.registerTask('test', [
 
+    grunt.registerTask('release', [
+        //'test',
+        'clean:release',
+        'copy:release',
+        'atRequire:release',
+        'atConfig:release',
+        'less:release',
+        'replace:release'
+    ]);
+
+    grunt.registerTask('test', [
         'test:unit',
         'test:e2e'
     ]);
